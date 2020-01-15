@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -18,6 +19,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                     COLUMN_EMAIL + " TEXT " +
                     " )";
 
+
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -32,4 +34,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         db.execSQL(TABLE_CREATE);
     }
 
+    public void addData(User user) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_ID, user.getEmail());
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.insert(TABLE_USERS, null, values);
+        db.close();
+    }
 }
