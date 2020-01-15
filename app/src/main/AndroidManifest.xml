@@ -19,9 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Scan">
-            <intent-filter>
                 <action android:name="android.intent.action.SCAN" />
-            </intent-filter>
         </activity>
     </application>
 
