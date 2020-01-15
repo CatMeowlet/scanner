@@ -1,6 +1,10 @@
 package com.example.myapplication;
 
-public class TableUserController extends DatabaseHandler {
+import android.content.Context;
 
+public class TableUserController extends DatabaseHandler {
+    public TableUserController(Context context) {
+        super(context);
+    }
 
 }
