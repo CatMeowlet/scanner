@@ -8,15 +8,15 @@ import android.util.Log;
 public class DatabaseHandler extends SQLiteOpenHelper{
 
     private static final int DATABASE_VERSION = 1;
-    protected static final String DATABASE_NAME = "companyDatabase";
-    public static final String TABLE_USERS = "user";
-    public static final String COLUMN_ID = "id";
-    public static final String COLUMN_EMAIL = "email";
+    private static final String DATABASE_NAME = "companyDatabase";
+    private static final String TABLE_USERS = "user";
+    private static final String COLUMN_ID = "id";
+    private static final String COLUMN_EMAIL = "email";
     private static final String TABLE_CREATE =
-            "CREATE TABLE " + TABLE_EMPLOYEES + " (" +
+            "CREATE TABLE " + TABLE_USERS + " (" +
                     COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    COLUMN_EMAIL + " TEXT, " +
-                    ")";
+                    COLUMN_EMAIL + " TEXT " +
+                    " )";
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
