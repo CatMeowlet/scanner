@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
         btnRegisterEmail = (Button) findViewById(R.id.btnRegisterEmail);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
-        btnRegisterEmail.setOnClickListener(this);
         mDatabaseHelper = new DatabaseHelper(this);
 
         btnRegisterEmail.setOnClickListener(new View.OnClickListener() {
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                     AddData(newEntry);
                     editTextEmail.setText("");
                 }else{
-                    toastMessage('You must put something in the field');
+                    toastMessage("Put Something in the field");
                 }
             }
         });
@@ -45,9 +44,9 @@ public class MainActivity extends AppCompatActivity {
     public void AddData(String newEntry){
         boolean insertData = mDatabaseHelper.addData(newEntry);
         if(insertData){
-            toastMessage('Data Inserted Successfuly');
+            toastMessage("Data Inserted Successfully");
         }else{
-            toastMessage('Something went wrong!');
+            toastMessage("Something went wrong!");
         }
     }
     private void toastMessage( String message ){
