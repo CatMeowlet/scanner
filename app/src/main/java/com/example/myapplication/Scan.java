@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,20 +11,31 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Scan extends AppCompatActivity implements  View.OnClickListener {
     //View Objects
     private Button buttonScan;
-    private TextView textViewName, textViewAddress;
-
+    private static String URL_INSERT = "http://localhost/LaravelQR_api/insert.php";
+    private String currentEmail;
+    private TextView textViewName, textViewAddress,textViewEmail;
     //qr code scanner object
     private IntentIntegrator qrScan;
-
+    private DatabaseHelper mDatabaseHelper = new DatabaseHelper(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,10 +45,19 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
         buttonScan = findViewById(R.id.buttonScan);
         textViewName = findViewById(R.id.textViewName);
         textViewAddress = findViewById(R.id.textViewAddress);
-
-        //intializing Scan object
+        textViewEmail = findViewById(R.id.textViewEmail);
+        //initializing Scan object
         qrScan = new IntentIntegrator(this);
 
+        // get curr user
+        Cursor cursor = mDatabaseHelper.fetch();
+        if(cursor.getCount() == 0){
+            toastMessage(" NO DATA FOUND ");
+        }else{
+            while(cursor.moveToNext()){
+                currentEmail = cursor.getString(1);
+            }
+        }
         //attaching onclick listener
         buttonScan.setOnClickListener(this);
     }
@@ -46,7 +67,7 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
-            //if qrcode has nothing in it
+            //if qr code has nothing in it
             if (result.getContents() == null) {
                 Toast.makeText(this, "Result Not Found", Toast.LENGTH_LONG).show();
             } else {
@@ -55,8 +76,15 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
                     //converting the data to json
                     //setting values to textviews
                     JSONObject obj = new JSONObject(result.getContents());
-                    textViewName.setText(obj.getString("email"));
-                    textViewAddress.setText(obj.getString("serial"));
+                        textViewEmail.setText(currentEmail);
+                        textViewName.setText(obj.getString("email"));
+                        textViewAddress.setText(obj.getString("serial"));
+                        String email = obj.getString("email");
+                        String serial = obj.getString("serial");
+
+                        // insert to mysql
+                        volleyInsert(email, serial, currentEmail);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                     //if control comes here
@@ -74,5 +102,49 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
     public void onClick(View view) {
         //initiating the qr code Scan
         qrScan.initiateScan();
+    }
+
+    public void volleyInsert(final String owner_email , final String serial , final String currentEmail){
+        // gradle > implementation 'com.android.volley:volley:1.1.0' > MySQL
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_INSERT,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String success = jsonObject.getString("success");
+
+                            if(success.equals("1")){
+                                toastMessage("Success");
+                            }
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                            toastMessage("Error! Can't Insert");
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        toastMessage("Error! Can't Insert");
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> params = new HashMap<>();
+                params.put("borrower_email",currentEmail );
+                params.put("owner_item_serial", serial);
+                params.put("owner_email", owner_email);
+                return params;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+
+    }
+    private void toastMessage( String message ){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

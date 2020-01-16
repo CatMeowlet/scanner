@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     //View Objects
     private Button btnRegisterEmail,btnMenu;
     private EditText editTextEmail;
+    private TextView textViewCompanyEmail;
     DatabaseHelper mDatabaseHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,10 +27,16 @@ public class MainActivity extends AppCompatActivity {
 
         btnRegisterEmail = findViewById(R.id.btnRegisterEmail);
         btnMenu = findViewById(R.id.btnMenu);
+        textViewCompanyEmail = findViewById(R.id.textViewCompanyEmail);
         editTextEmail = findViewById(R.id.editTextEmail);
         mDatabaseHelper = new DatabaseHelper(this);
+        if(mDatabaseHelper.count() != 0 ) {
+            startActivity(new Intent(this, Menu.class));
+            btnRegisterEmail.setVisibility(View.GONE);
+            textViewCompanyEmail.setVisibility(View.GONE);
+            editTextEmail.setVisibility(View.GONE);
+        }
 
-        if(mDatabaseHelper.count() == 0 ){
             btnRegisterEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -62,13 +70,15 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-        }else{
-            startActivity(new Intent(this, Menu.class));
-        }
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this , Menu.class));
+                if(mDatabaseHelper.count() == 0){
+                    toastMessage("No Email has been registered yet please register first!");
+                }else{
+                    startActivity(new Intent(MainActivity.this , Menu.class));
+                }
+
             }
         });
     }// end of on create

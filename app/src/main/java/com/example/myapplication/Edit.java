@@ -27,7 +27,7 @@ public class Edit extends AppCompatActivity {
         Cursor cursor = mDatabaseHelper.fetch();
 
         if(cursor.getCount() == 0){
-            toastMessage(" NO DATA FOUND");
+            toastMessage(" NO DATA FOUND ");
         }else{
             while(cursor.moveToNext()){
                  email = cursor.getString(1);
