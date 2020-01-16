@@ -27,24 +27,32 @@ public class MainActivity extends AppCompatActivity {
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         mDatabaseHelper = new DatabaseHelper(this);
 
-        btnRegisterEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String newEntry = editTextEmail.getText().toString().trim();
-                if(editTextEmail.length() != 0){
-                    AddData(newEntry);
-                    editTextEmail.setText("");
-                }else{
-                    toastMessage("Put Something in the field");
+        if(mDatabaseHelper.count() == 0 ){
+            btnRegisterEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String newEntry = editTextEmail.getText().toString().trim();
+                    if(editTextEmail.length() != 0){
+                        AddData(newEntry);
+                        editTextEmail.setText("");
+                    }else{
+                        toastMessage("Put Something in the field");
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            Intent intent = new Intent(this, Menu.class);
+            startActivity(intent);
+        }
+
     }// end of on create
 
     public void AddData(String newEntry){
         boolean insertData = mDatabaseHelper.addData(newEntry);
         if(insertData){
             toastMessage("Data Inserted Successfully");
+            Intent i = new Intent(this, Menu.class);
+            startActivity(i);
         }else{
             toastMessage("Something went wrong!");
         }
