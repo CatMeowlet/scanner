@@ -30,9 +30,9 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
         setContentView(R.layout.activity_scan);
 
         //View objects
-        buttonScan = (Button) findViewById(R.id.buttonScan);
-        textViewName = (TextView) findViewById(R.id.textViewName);
-        textViewAddress = (TextView) findViewById(R.id.textViewAddress);
+        buttonScan = findViewById(R.id.buttonScan);
+        textViewName = findViewById(R.id.textViewName);
+        textViewAddress = findViewById(R.id.textViewAddress);
 
         //intializing Scan object
         qrScan = new IntentIntegrator(this);
@@ -53,8 +53,8 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
                 //if qr contains data
                 try {
                     //converting the data to json
-                    JSONObject obj = new JSONObject(result.getContents());
                     //setting values to textviews
+                    JSONObject obj = new JSONObject(result.getContents());
                     textViewName.setText(obj.getString("email"));
                     textViewAddress.setText(obj.getString("serial"));
                 } catch (JSONException e) {

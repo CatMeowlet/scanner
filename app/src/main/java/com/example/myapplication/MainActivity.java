@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnRegisterEmail = (Button) findViewById(R.id.btnRegisterEmail);
-        editTextEmail = (EditText) findViewById(R.id.editTextEmail);
+        btnRegisterEmail = findViewById(R.id.btnRegisterEmail);
+        editTextEmail = findViewById(R.id.editTextEmail);
         mDatabaseHelper = new DatabaseHelper(this);
 
         if(mDatabaseHelper.count() == 0 ){
@@ -41,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }else{
-            Intent intent = new Intent(this, Menu.class);
-            startActivity(intent);
+            startActivity(new Intent(this, Menu.class));
         }
 
     }// end of on create
@@ -51,8 +50,7 @@ public class MainActivity extends AppCompatActivity {
         boolean insertData = mDatabaseHelper.addData(newEntry);
         if(insertData){
             toastMessage("Data Inserted Successfully");
-            Intent i = new Intent(this, Menu.class);
-            startActivity(i);
+            startActivity(new Intent(this, Menu.class));
         }else{
             toastMessage("Something went wrong!");
         }
