@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,7 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:padding="20dp"
         android:orientation="vertical">
 
         <TextView
@@ -19,10 +20,9 @@
 
         <EditText
             android:id="@+id/editTextEmail"
-            android:layout_marginLeft="50px"
-            android:layout_marginRight="50px"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="15sp"
             android:hint=" ex. jamesvincent.ocariza@bpoc.co.jp"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
@@ -32,11 +32,16 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/editTextEmail"
             android:layout_alignParentBottom="true"
-            android:layout_marginTop="93dp"
-            android:layout_marginBottom="176dp"
             android:text="Register" />
+        <Button
+            android:id="@+id/btnMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editTextEmail"
+            android:text="Menu" />
+
     </LinearLayout>
 
 
 
-</RelativeLayout>
+</LinearLayout>
