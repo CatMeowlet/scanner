@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,10 +28,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.ContentValues.TAG;
+
 public class Scan extends AppCompatActivity implements  View.OnClickListener {
     //View Objects
     private Button buttonScan;
-    private static String URL_INSERT = "http://localhost/LaravelQR_api/insert.php";
+    private static String URL_INSERT = "http://192.168.22.149/LaravelQR_api/insert.php";
     private String currentEmail;
     private TextView textViewName, textViewAddress,textViewEmail;
     //qr code scanner object
@@ -77,11 +80,11 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
                     //setting values to textviews
                     JSONObject obj = new JSONObject(result.getContents());
                         textViewEmail.setText(currentEmail);
-                        textViewName.setText(obj.getString("email"));
-                        textViewAddress.setText(obj.getString("serial"));
+
                         String email = obj.getString("email");
                         String serial = obj.getString("serial");
-
+                        textViewName.setText(email);
+                        textViewAddress.setText(serial);
                         // insert to mysql
                         volleyInsert(email, serial, currentEmail);
 
@@ -114,12 +117,13 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
                             JSONObject jsonObject = new JSONObject(response);
                             String success = jsonObject.getString("success");
 
+                            Log.d(TAG, "param: " + jsonObject);
                             if(success.equals("1")){
                                 toastMessage("Success");
                             }
                         }catch (JSONException e){
                             e.printStackTrace();
-                            toastMessage("Error! Can't Insert");
+                            toastMessage("Error! Can't Insert"+e);
                         }
 
                     }
@@ -127,7 +131,7 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        toastMessage("Error! Can't Insert");
+                        toastMessage("Error! Can't Insert !!"+error);
                     }
                 })
         {
@@ -138,11 +142,11 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
                 params.put("owner_item_serial", serial);
                 params.put("owner_email", owner_email);
                 return params;
+
             }
         };
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
-
     }
     private void toastMessage( String message ){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
