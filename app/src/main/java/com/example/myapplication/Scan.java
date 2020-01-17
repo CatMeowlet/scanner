@@ -85,9 +85,14 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
                         String serial = obj.getString("serial");
                         textViewName.setText(email);
                         textViewAddress.setText(serial);
+
+                        //check if borrower email and owner email is the same
+                    if (email.equals(currentEmail)) {
+                        toastMessage("Same email with the owner or you are borrowing your own item");
+                    }else{
                         // insert to mysql
                         volleyInsert(email, serial, currentEmail);
-
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                     //if control comes here
@@ -120,10 +125,12 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
                             Log.d(TAG, "param: " + jsonObject);
                             if(success.equals("1")){
                                 toastMessage("Success");
+                            }else if(success.equals("3")){
+                                toastMessageLong("Error You need to input a real company email");
                             }
                         }catch (JSONException e){
                             e.printStackTrace();
-                            toastMessage("Error! Can't Insert"+e);
+                            toastMessageLong("Error! Can't Insert"+e);
                         }
 
                     }
@@ -131,7 +138,7 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        toastMessage("Error! Can't Insert !!"+error);
+                        toastMessage("Error! Can't Insert !! "+error);
                     }
                 })
         {
@@ -149,6 +156,9 @@ public class Scan extends AppCompatActivity implements  View.OnClickListener {
         requestQueue.add(stringRequest);
     }
     private void toastMessage( String message ){
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+    private void toastMessageLong( String message ){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
